@@ -1,0 +1,101 @@
+
+@import url('mdb.css');
+
+html { overflow-x:hidden; background: #e8f0f4;}
+/*#e8f0f4*/
+body {
+  background: #e8f0f4;
+  font-family: "Roboto","宋体",sans-serif;
+  margin: 0;
+  overflow-x: hidden; }
+ 
+ /*首页－href*/
+.content-header {
+	position: relative;
+	padding: 0 0 3px 8px
+}
+
+.select-box-input{
+	border-right: none !important;
+}
+
+.divWhite{
+	background: #fff !important;
+}
+/*
+.hoverable {
+  -webkit-transition: -webkit-box-shadow 0.55s;
+  transition: -webkit-box-shadow 0.55s;
+  transition: box-shadow 0.55s;
+  transition: box-shadow 0.55s, -webkit-box-shadow 0.55s;
+  -webkit-box-shadow: 0;
+  box-shadow: 0; }
+  .hoverable:hover {
+    -webkit-transition: -webkit-box-shadow 0.45s;
+    transition: -webkit-box-shadow 0.45s;
+    transition: box-shadow 0.45s;
+    transition: box-shadow 0.45s, -webkit-box-shadow 0.45s;
+    -webkit-box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
+
+
+<!-- .content-header .breadcrumb {
+    position: relative;
+    top: 0;
+    right: 0;
+    float: none;
+    margin-top: 0px;
+    padding-left: 10px;
+    background: #ecf0f5;
+}-->*/
+.content-header .breadcrumb {
+	position: relative;
+    top: 0;
+    right: 0;
+    float: none;
+    margin: 0px;
+    background-color: inherit;
+    font-weight: 300;
+    padding-left: 1rem;
+    font-size: 13px; }
+/*页脚*/
+.main-footer {
+    padding: 7px;
+    color: #fff;
+    background-color:#3b8ab8;
+    border-top: 1px solid #eee;
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.grid-btn{
+	margin-bottom:12px;
+}
+.grid-btn .btn{
+	margin-right:10px;
+}
+.pointer{cursor: pointer;}
+
+.ml-10 { margin-left:0 !important; }
+@media (min-width: 768px) {
+	.ml-10 { margin-left:10px !important; }
+	.col-sm-10 {width: 70%;padding-left: 0px;}
+	.col-sm-2 {width: 24%;}
+}
+tbody > tr > th {font-weight: normal; }
+.panel .table { margin:0 0; }
+.panel .pagination { margin:0; }
+.panel-default>.panel-heading {background-color: #f5f5f5;}
+.row{
+	border-top: 1px solid #ddd;
+	margin:0;
+	padding:20px 2px 0px 2px;
+}
+.col-xs-6{padding-left: 0px;padding-right: 0px;}
+/*change password*/
+.form-horizontal .form-group {margin-left:0px;margin-right:0px;}
+.form-horizontal{
+	width:550px;padding-top:20px;
+}

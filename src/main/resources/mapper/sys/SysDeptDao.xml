@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shuyao.modules.sys.dao.SysDeptDao">
+
+	<select id="queryObject" resultType="com.shuyao.modules.sys.entity.SysDeptEntity">
+		select * from sys_dept where dept_id = #{value} and del_flag = 0
+	</select>
+
+	<select id="queryList" resultType="com.shuyao.modules.sys.entity.SysDeptEntity">
+		select d.*,(select p.name from sys_dept p where p.dept_id = d.parent_id) as parentName
+		from sys_dept d where d.del_flag = 0
+		<if test="deptFilter != null">
+			and d.dept_id in (${deptFilter})
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by d.${sidx} ${order}
+            </when>
+			<otherwise>
+                order by d.order_num asc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	 
+	<insert id="save" parameterType="com.shuyao.modules.sys.entity.SysDeptEntity" useGeneratedKeys="true" keyProperty="deptId">
+		insert into sys_dept
+		(
+			`parent_id`, 
+			`name`, 
+			`order_num`,
+			`dept_type`
+		)
+		values
+		(
+			#{parentId}, 
+			#{name}, 
+			#{orderNum},
+			#{deptType}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.shuyao.modules.sys.entity.SysDeptEntity">
+		update sys_dept 
+		<set>
+			<if test="parentId != null">`parent_id` = #{parentId}, </if>
+			<if test="name != null">`name` = #{name}, </if>
+			<if test="orderNum != null">`order_num` = #{orderNum}</if>
+			<if test="deptType != null">`dept_type` = #{deptType}</if>
+		</set>
+		where dept_id = #{deptId}
+	</update>
+	
+	<update id="delete">
+		update sys_dept set del_flag = -1 where dept_id = #{value}
+	</update>
+	
+	<select id="queryDetpIdList" resultType="long">
+		select dept_id from sys_dept where parent_id = #{value} and del_flag = 0
+	</select>
+
+    <select id="queryDetpIdByMenuList" resultType="com.shuyao.modules.sys.entity.SysDeptEntity">
+		select d.*,(select p.name from sys_dept p where p.dept_id = d.parent_id) as parentName
+		from sys_dept d where d.del_flag = 0 and d.dept_type != 'D' and
+		d.dept_id in (
+            select distinct dept_id from sys_role_dept rd,  sys_role_menu rm 
+            where rd.role_id = rm.role_id 
+            <if test="menu != null">
+			     and rm.menu_id = #{menu}
+		   </if>  
+            <if test="roleFilter != null">
+			      and rm.role_id in (${roleFilter})
+		   </if>
+         )
+	</select>
+</mapper>

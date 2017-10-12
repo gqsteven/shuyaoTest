@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.shuyao.modules.statistics.dao.AnalyzeTanzhenDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.shuyao.modules.statistics.entity.AnalyzeTanzhenEntity" id="analyzeTanzhenMap">
+        <result property="id" column="id"/>
+        <result property="dealerName" column="dealer_name"/>
+        <result property="companyName" column="company_name"/>
+        <result property="s4Name" column="s4_name"/>
+        <result property="mobile" column="mobile"/>
+        <result property="incomingTime" column="incoming_time"/>
+        <result property="keepTime" column="keep_time"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.shuyao.modules.statistics.entity.AnalyzeTanzhenEntity">
+		select * from analyze_tanzhen where id = #{value}
+	</select>
+
+<resultMap id="selectMap" type="java.util.Map" >
+	<result property="name" column="name" jdbcType="VARCHAR" />
+	<result property="time" column="time" jdbcType="VARCHAR" />
+	<result property="count" column="count" jdbcType="NUMERIC" />
+</resultMap>
+    <select id="queryByCon" resultType="java.util.Map">
+		select company_name name,date_format(incoming_time,'%Y-%m') time,count(1) count from analyze_tanzhen
+		<where>
+			<if test="comName != null and comName.length != 0">
+				`s4_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+				or `company_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+			</if>
+			<if test="comName != null and comName.length != 0 and startTime != null and startTime.trim() != ''">
+			and
+			</if>
+			<if test="startTime != null and startTime.trim() != ''">
+				incoming_time &gt; date_format(#{startTime},'%Y-%m-%d %H:%i:%s')
+			</if>
+		</where>
+		group by company_name,date_format(incoming_time,'%Y-%m') 
+		order by company_name,date_format(incoming_time,'%Y-%m')
+	</select>
+
+	<select id="queryList" resultType="com.shuyao.modules.statistics.entity.AnalyzeTanzhenEntity">
+		select * from analyze_tanzhen
+		<where>
+			<if test="comName != null and comName.length != 0">
+				`s4_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+				or `company_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+			</if>
+			<if test="comName != null and comName.length != 0 and startTime != null and startTime.trim() != ''">
+			and
+			</if>
+			<if test="startTime != null and startTime.trim() != ''">
+				incoming_time &gt; date_format(#{startTime},'%Y-%m-%d %H:%i:%s')
+			</if>
+		</where>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from analyze_tanzhen 
+		<where>
+			<if test="comName != null  and comName.length != 0">
+				`s4_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+				or `company_name` in
+				<foreach collection="comName" item="comNameId" index="index" open="(" separator="," close=")" >    
+                     #{comNameId}   
+                </foreach>
+			</if>
+			<if test="comName != null  and comName.length != 0 and startTime != null and startTime.trim() != ''">
+			and
+			</if>
+			<if test="startTime != null and startTime.trim() != ''">
+				incoming_time &gt; date_format(#{startTime},'%Y-%m-%d %H:%i:%s')
+			</if>
+		</where>
+	</select>
+	 
+	<insert id="save" parameterType="com.shuyao.modules.statistics.entity.AnalyzeTanzhenEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into analyze_tanzhen
+		(
+			`dealer_name`, 
+			`company_name`, 
+			`s4_name`, 
+			`mobile`, 
+			`incoming_time`, 
+			`keep_time`, 
+			`status`, 
+			`create_time`
+		)
+		values
+		(
+			#{dealerName}, 
+			#{companyName}, 
+			#{s4Name}, 
+			#{mobile}, 
+			#{incomingTime}, 
+			#{keepTime}, 
+			#{status}, 
+			#{createTime}
+		)
+	</insert>
+	 
+	<update id="update" parameterType="com.shuyao.modules.statistics.entity.AnalyzeTanzhenEntity">
+		update analyze_tanzhen 
+		<set>
+			<if test="dealerName != null">`dealer_name` = #{dealerName}, </if>
+			<if test="companyName != null">`company_name` = #{companyName}, </if>
+			<if test="s4Name != null">`s4_name` = #{s4Name}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="incomingTime != null">`incoming_time` = #{incomingTime}, </if>
+			<if test="keepTime != null">`keep_time` = #{keepTime}, </if>
+			<if test="status != null">`status` = #{status}, </if>
+			<if test="createTime != null">`create_time` = #{createTime}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from analyze_tanzhen where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from analyze_tanzhen where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
